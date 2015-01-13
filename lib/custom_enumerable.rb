@@ -9,14 +9,16 @@ module CustomEnumerable
   end
 
   def find(ifnone = nil, &block)
-    result = ifnone
+    result = nil
+    found = false
     each do |element|
       if block.call(element)
         result = element
+        found = true
         break
       end
     end
-    result
+    found ? result : ifnone && ifnone.call
   end
 
   def find_all(&block)
@@ -43,13 +45,13 @@ module CustomEnumerable
       raise ArgumentError, "you must provide an operation or a block"
     end
 
+    if operation && block
+      raise ArgumentError, "you must provide either an operation symbol or a block, not both"
+    end
+
     if operation.nil? && block.nil?
       operation = accumulator
       accumulator = nil
-    end
-
-    if operation && block
-      raise ArgumentError, "you must provide either an operation symbol or a block, not both"
     end
 
     block = case operation

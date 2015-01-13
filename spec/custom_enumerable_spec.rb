@@ -47,7 +47,7 @@ RSpec.describe CustomEnumerable do
 
     it 'returns the ifnone value if no item is found' do
       items = ArrayWrapper.new(1, 2, 3, 4)
-      result = items.find(0) do |element|
+      result = items.find(lambda {0}) do |element|
         element < 1
       end
       expect(result).to eq(0)
@@ -57,6 +57,22 @@ RSpec.describe CustomEnumerable do
       items = ArrayWrapper.new(1, 2, 3, 4)
       result = items.find do |element|
         element == 10
+      end
+      expect(result).to be_nil
+    end
+
+    it "returns nil if it is empty" do
+      items = ArrayWrapper.new
+      result = items.find do |element|
+        element == 10
+      end
+      expect(result).to be_nil
+    end
+
+    it "finds nil" do
+      items = ArrayWrapper.new(true, false, nil, 10)
+      result = items.find(true) do |element|
+        element.nil?
       end
       expect(result).to be_nil
     end
